@@ -18,6 +18,7 @@ services:
   database:
     build:
       context: .
+      dockerfile: ./docker/db.Dockerfile
     environment:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
