@@ -11,8 +11,8 @@ import (
 type ReceiptBase struct {
 	ID 				  BINARY16 		  `gorm:"primaryKey" json:"id"`
 	Retailer          string          `gorm:"type:varchar(255)" json:"retailer" validate:"required"`
-	PurchaseDate      string          `gorm:"type:varchar(255)" json:"purchaseDate" validate:"required"`
-	PurchaseTime      string          `gorm:"type:varchar(255)" json:"purchaseTime" validate:"required"`
+	PurchaseDate      string          `gorm:"type:varchar(255)" json:"purchaseDate" validate:"required,date"`
+	PurchaseTime      string          `gorm:"type:varchar(255)" json:"purchaseTime" validate:"required,time"`
 	Total			  string          `gorm:"type:varchar(255)" json:"total"`
 }
 
@@ -25,7 +25,7 @@ type Items struct {
 	ID 				  	BINARY16 		  `gorm:"primaryKey" json:"id"`
 	ReceiptId           *BINARY16         `json:"receiptId"`
 	ShortDescription    string            `gorm:"type:varchar(255)" json:"shortDescription"`
-    Price               string            `gorm:"type:varchar(255)" json:"price"`
+    Price               string            `gorm:"type:varchar(255)" json:"price" validate:"float"`
 }
 
 func (m *ReceiptBase) BeforeCreate(_ *gorm.DB) error {

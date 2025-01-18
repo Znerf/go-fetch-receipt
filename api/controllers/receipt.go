@@ -1,12 +1,14 @@
 package controllers
 
 import (
-	"fmt"
+	// "fmt"
 	"receipt/api/services"
 	"receipt/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"time"
 )
 
 type ReceiptController struct {
@@ -61,6 +63,8 @@ func (cc ReceiptController) GetPoints(c *gin.Context) {
 
 
 func (cc ReceiptController) CreateReceipt(c *gin.Context) {
+	
+
 
 	receipt := models.Receipt{}
 	if err := c.ShouldBindJSON(&receipt); err != nil {
@@ -69,9 +73,22 @@ func (cc ReceiptController) CreateReceipt(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println("sdf", receipt)
 	
-	receipt, err := cc.ReceiptService.Create(receipt)
+	var validate *validator.Validate
+	validate = validator.New()
+    validate.RegisterValidation("date", validateDateFormat)
+	validate.RegisterValidation("time", validateTimeFormat)
+
+
+	err := validate.Struct(receipt)
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	
+	receipt, err = cc.ReceiptService.Create(receipt)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -81,4 +98,17 @@ func (cc ReceiptController) CreateReceipt(c *gin.Context) {
 	c.JSON(200, gin.H{
         "id":  receipt.ID,
     })
+}
+
+//Need to add somewhere else
+func validateDateFormat(fl validator.FieldLevel) bool {
+    dateStr := fl.Field().String()
+    _, err := time.Parse("2006-01-02", dateStr)
+    return err == nil
+}
+
+func validateTimeFormat(fl validator.FieldLevel) bool {
+    dateStr := fl.Field().String()
+    _, err := time.Parse("15:04", dateStr)
+    return err == nil
 }
