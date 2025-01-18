@@ -43,6 +43,12 @@ func (cc ReceiptController) GetPoints(c *gin.Context) {
 
 	points, err := cc.ReceiptService.GetPoints(IdBinary)
 	if err != nil {
+		if points == -1 {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})

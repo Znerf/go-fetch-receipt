@@ -31,10 +31,7 @@ make migrate-up
 ### Tasks Left
 - [ ] Implement comprehensive error handling
 - [ ] Complete project documentation
-    - API documentation
-    - Architecture overview
-    - Development guidelines
-    - Testing procedures
+Some part may be incomplete because it not given in problem set
 
 ## Prerequisites
 

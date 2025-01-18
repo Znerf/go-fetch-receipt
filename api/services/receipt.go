@@ -1,5 +1,5 @@
 package services
-
+// this is for both service and repository
 import (
 	"fmt"
 	"receipt/resource"
@@ -9,6 +9,8 @@ import (
 	"math"
 	"time"
 	"strings"
+	"gorm.io/gorm"
+	"errors"
 )
 
 type ReceiptService struct {
@@ -24,7 +26,7 @@ func NewReceiptService(db resource.Database) ReceiptService {
 func (c ReceiptService) Create(receipt models.Receipt) (models.Receipt, error) {
 	var total float64 =0
 	for _, x := range receipt.Items {
-		num, err :=  strconv.ParseFloat(x.Price, 64) //strconv.Atoi(x.Price)
+		num, err :=  strconv.ParseFloat(x.Price, 64) 
 		if err != nil {
 			fmt.Println("Error:", err)
 			return receipt, err
@@ -60,12 +62,18 @@ func (c ReceiptService) GetPoints( ID models.BINARY16) (int, error) {
 	
 	err := c.db.DB.Where("id = ?", ID).Preload("Items").First(&receipt).Error
 	if err != nil{
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return -1, err
+		}
 		return pointCount,err
 	}
 
 	pointCount = c.countAlphaNumeric(receipt.Retailer)
 
-	num, _:= strconv.ParseFloat(receipt.Total, 64) 
+	num, err:= strconv.ParseFloat(receipt.Total, 64) 
+	if err != nil {
+		return pointCount, err
+	}
 	decimal := int((num - math.Floor(num))*100)
 
 	if decimal == 0 {
