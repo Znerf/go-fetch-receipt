@@ -45,12 +45,12 @@ func (cc ReceiptController) GetPoints(c *gin.Context) {
 	if err != nil {
 		if points == -1 {
 			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
+				"error": "No receipt found for that ID.",
 			})
 			return
 		}
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": "The receipt is invalid.",
 		})
 		return
 	}
