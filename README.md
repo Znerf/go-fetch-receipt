@@ -6,7 +6,7 @@ This repository contains the Fetch Receipt service implementation. Follow the in
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone git@github.com:Znerf/go-fetch-receipt.git
 cd go-fetch-receipt
 ```
 
